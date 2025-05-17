@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 import 'reflect-metadata';
+import { ResponseInterceptor } from './common/response/response.interceptor';
+import { HttpExceptionFilter } from './common/http-exception/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +19,10 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   const port = configService.get<number>('PORT');
 

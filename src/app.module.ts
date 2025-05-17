@@ -10,6 +10,7 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 
 import { AnnouncementsModule } from './announcements/announcements.module';
 import { AuthModule } from './auth/auth.module';
+import { ResponseService } from './common/response/response.service';
 
 @Module({
   imports: [
@@ -28,6 +29,6 @@ import { AuthModule } from './auth/auth.module';
     }),
   ],
   controllers: [AppController, QuizzesController],
-  providers: [AppService],
+  providers: [AppService, ResponseService],
 })
 export class AppModule {}

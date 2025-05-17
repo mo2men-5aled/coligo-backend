@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Quiz, QuizDocument } from './schemas/quiz.schema';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -16,6 +17,18 @@ export class QuizzesService {
 
   async findAll(): Promise<Quiz[]> {
     return this.quizModel.find().exec();
+  }
+
+  async findAllPaginated(paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.quizModel.find().skip(skip).limit(limit).exec(),
+      this.quizModel.countDocuments().exec(),
+    ]);
+
+    return { data, total };
   }
 
   async findOne(id: string): Promise<Quiz> {

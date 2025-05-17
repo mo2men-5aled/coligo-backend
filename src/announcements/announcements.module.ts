@@ -15,6 +15,6 @@ import {
   ],
   controllers: [AnnouncementsController],
   providers: [AnnouncementsService],
-  exports: [AnnouncementsService], // optional
+  exports: [AnnouncementsService],
 })
 export class AnnouncementsModule {}

@@ -16,7 +16,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    console.log('i have recieved a login request');
     const token = await this.authService.login(loginDto);
     return token;
   }

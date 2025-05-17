@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 // Define your response interfaces
-interface SuccessResponse<T> {
+export interface SuccessResponse<T> {
   success: true;
   message: string;
   data: T;
@@ -9,7 +9,7 @@ interface SuccessResponse<T> {
   timestamp: string;
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   success: false;
   message: string;
   errors?: unknown;
@@ -17,14 +17,14 @@ interface ErrorResponse {
   timestamp: string;
 }
 
-interface PaginationMeta {
-  page: number;
-  limit: number;
+export interface PaginationMeta {
+  page?: number;
+  limit?: number;
   totalItems: number;
   totalPages: number;
 }
 
-interface PaginatedResponse<T> {
+export interface PaginatedResponse<T> {
   success: true;
   message: string;
   data: T[];

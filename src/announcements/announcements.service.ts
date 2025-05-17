@@ -7,6 +7,7 @@ import {
 } from './schemas/announcement.schema';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class AnnouncementsService {
@@ -26,6 +27,27 @@ export class AnnouncementsService {
 
   async findAll(): Promise<Announcement[]> {
     return this.announcementModel.find().exec();
+  }
+
+  async findAllPaginated(paginationDto: PaginationDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'name',
+      sortOrder = 'desc',
+    } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const announcements = await this.announcementModel
+      .find()
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const total = await this.announcementModel
+      .countDocuments(announcements)
+      .exec();
+    return { data: announcements, total };
   }
 
   async findOne(id: string): Promise<Announcement> {

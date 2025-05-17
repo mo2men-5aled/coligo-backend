@@ -1,3 +1,4 @@
+// src/quizzes/quizzes.controller.ts
 import {
   Controller,
   Get,
@@ -6,37 +7,66 @@ import {
   Param,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
-  constructor(private readonly quizService: QuizzesService) {}
+  constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
-  create(@Body() createQuizDto: CreateQuizDto) {
-    return this.quizService.create(createQuizDto);
+  async create(@Body() createQuizDto: CreateQuizDto) {
+    const quiz = await this.quizzesService.create(createQuizDto);
+    return {
+      result: quiz,
+      message: 'Quiz created successfully',
+    };
   }
 
   @Get()
-  findAll() {
-    return this.quizService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto) {
+    const { data, total } =
+      await this.quizzesService.findAllPaginated(paginationDto);
+    return {
+      result: data,
+      meta: {
+        page: paginationDto.page,
+        limit: paginationDto.limit,
+        totalItems: total,
+        totalPages: Math.ceil(total / (paginationDto.limit ?? 10)),
+      },
+      message: 'Quizzes retrieved successfully',
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.quizService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const quiz = await this.quizzesService.findOne(id);
+    return {
+      result: quiz,
+      message: 'Quiz retrieved successfully',
+    };
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
-    return this.quizService.update(id, updateQuizDto);
+  async update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
+    const updatedQuiz = await this.quizzesService.update(id, updateQuizDto);
+    return {
+      result: updatedQuiz,
+      message: 'Quiz updated successfully',
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.quizService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.quizzesService.remove(id);
+    return {
+      result: null,
+      message: 'Quiz deleted successfully',
+    };
   }
 }

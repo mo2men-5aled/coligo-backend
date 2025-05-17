@@ -1,9 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-
 import { AppModule } from './app.module';
-
 import 'reflect-metadata';
 import { ResponseInterceptor } from './common/response/response.interceptor';
 import { HttpExceptionFilter } from './common/http-exception/http-exception.filter';
@@ -11,6 +9,14 @@ import { HttpExceptionFilter } from './common/http-exception/http-exception.filt
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+
+  // Enable CORS with proper configuration
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // If you need to allow cookies/auth headers
+    allowedHeaders: 'Content-Type,Authorization', // Specify allowed headers
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -21,13 +27,12 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
-
   app.useGlobalInterceptors(new ResponseInterceptor());
 
   const port = configService.get<number>('PORT');
-
   await app.listen(port ?? 3000);
 }
+
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);
   process.exit(1);

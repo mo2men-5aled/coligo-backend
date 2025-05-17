@@ -27,7 +27,8 @@ export class AnnouncementsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.announcementsService.findOne(id);
+    const ID = id;
+    return this.announcementsService.findOne(ID);
   }
 
   @Put(':id')

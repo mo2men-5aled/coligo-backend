@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,13 +13,19 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_URI ||
-        'mongodb+srv://momen:momen@cluster0.gtplyfa.mongodb.net/coligo',
-    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     QuizzesModule,
     AnnouncementsModule,
     AuthModule,
+
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController, QuizzesController],
   providers: [AppService],

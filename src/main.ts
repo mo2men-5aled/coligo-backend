@@ -15,6 +15,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'https://coligo-frontend-alce-in4k7mzl4-mo2men5aleds-projects.vercel.app',
+      'https://coligo-frontend-alce-git-main-mo2men5aleds-projects.vercel.app/',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // If you need to allow cookies/auth headers

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type AnnouncementDocument = Announcement & Document;
 
@@ -11,8 +11,8 @@ export class Announcement {
   @Prop()
   content: string;
 
-  @Prop({ required: true })
-  postedAt: Date;
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: 'User' })
+  createdBy: string;
 }
 
 export const AnnouncementSchema = SchemaFactory.createForClass(Announcement);

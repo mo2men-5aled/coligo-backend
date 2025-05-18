@@ -1,9 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsDateString,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateAnnouncementDto {
   @IsString()
@@ -14,7 +9,7 @@ export class CreateAnnouncementDto {
   @IsOptional()
   content?: string;
 
-  @IsDateString()
-  @IsNotEmpty()
-  postedAt: string;
+  @IsString()
+  @IsOptional()
+  createdBy: string;
 }

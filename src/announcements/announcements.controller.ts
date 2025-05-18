@@ -13,16 +13,21 @@ import { AnnouncementsService } from './announcements.service';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { Request } from '@nestjs/common';
 
 @Controller('announcements')
 export class AnnouncementsController {
   constructor(private readonly announcementsService: AnnouncementsService) {}
 
   @Post()
-  async create(@Body() createAnnouncementDto: CreateAnnouncementDto) {
-    const announcement = await this.announcementsService.create(
-      createAnnouncementDto,
-    );
+  async create(
+    @Body() createAnnouncementDto: CreateAnnouncementDto,
+    @Request() req,
+  ) {
+    const announcement = await this.announcementsService.create({
+      ...createAnnouncementDto,
+      createdBy: req.user.userId,
+    });
     return {
       result: announcement,
       message: 'Announcement created successfully',

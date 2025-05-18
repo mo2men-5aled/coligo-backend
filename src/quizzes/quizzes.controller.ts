@@ -13,14 +13,18 @@ import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { Request } from '@nestjs/common';
 
 @Controller('quizzes')
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
-  async create(@Body() createQuizDto: CreateQuizDto) {
-    const quiz = await this.quizzesService.create(createQuizDto);
+  async create(@Body() createQuizDto: CreateQuizDto, @Request() req) {
+    const quiz = await this.quizzesService.create({
+      ...createQuizDto,
+      createdBy: req.user.userId as string,
+    });
     return {
       result: quiz,
       message: 'Quiz created successfully',

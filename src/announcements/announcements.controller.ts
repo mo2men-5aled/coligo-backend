@@ -82,4 +82,25 @@ export class AnnouncementsController {
       message: 'Announcement deleted successfully',
     };
   }
+
+  @Get('my-announcements')
+  async findMyAnnouncements(
+    @Request() req,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    const { data, total } = await this.announcementsService.findByCreator(
+      req.user.userId,
+      paginationDto,
+    );
+    return {
+      result: data,
+      meta: {
+        page: paginationDto.page,
+        limit: paginationDto.limit,
+        totalItems: total,
+        totalPages: Math.ceil(total / (paginationDto.limit ?? 10)),
+      },
+      message: 'Announcements retrieved successfully',
+    };
+  }
 }

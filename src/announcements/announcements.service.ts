@@ -75,4 +75,26 @@ export class AnnouncementsService {
     const result = await this.announcementModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('Announcement not found');
   }
+
+  async findByCreator(userId: string, paginationDto: PaginationDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.announcementModel
+        .find({ createdBy: userId })
+        .sort({ [sortBy]: sortOrder })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.announcementModel.countDocuments({ createdBy: userId }).exec(),
+    ]);
+
+    return { data, total };
+  }
 }

@@ -49,4 +49,16 @@ export class QuizzesService {
     const result = await this.quizModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('Quiz not found');
   }
+
+  async findByCreator(userId: string, paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.quizModel.find({ createdBy: userId }).skip(skip).limit(limit).exec(),
+      this.quizModel.countDocuments({ createdBy: userId }).exec(),
+    ]);
+
+    return { data, total };
+  }
 }

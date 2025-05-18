@@ -73,4 +73,22 @@ export class QuizzesController {
       message: 'Quiz deleted successfully',
     };
   }
+
+  @Get('my-quizzes')
+  async findMyQuizzes(@Request() req, @Query() paginationDto: PaginationDto) {
+    const { data, total } = await this.quizzesService.findByCreator(
+      req.user.userId,
+      paginationDto,
+    );
+    return {
+      result: data,
+      meta: {
+        page: paginationDto.page,
+        limit: paginationDto.limit,
+        totalItems: total,
+        totalPages: Math.ceil(total / (paginationDto.limit ?? 10)),
+      },
+      message: 'Quizzes retrieved successfully',
+    };
+  }
 }
